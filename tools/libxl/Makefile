@@ -166,7 +166,7 @@ LIBXL_TEST_OBJS += $(foreach t, $(LIBXL_TESTS_INSIDE),libxl_test_$t.o)
 TEST_PROG_OBJS += $(foreach t, $(LIBXL_TESTS_PROGS),test_$t.o) test_common.o
 TEST_PROGS += $(foreach t, $(LIBXL_TESTS_PROGS),test_$t)
 
-$(LIBXL_OBJS) $(LIBXL_TEST_OBJS): CFLAGS += $(CFLAGS_LIBXL) -include $(XEN_ROOT)/tools/config.h
+$(LIBXL_OBJS) $(LIBXL_TEST_OBJS): CFLAGS += $(CFLAGS_LIBXL) -include $(XEN_ROOT)/tools/config.h $(CFLAGS_libblktapctl)
 
 AUTOINCS= libxlu_cfg_y.h libxlu_cfg_l.h _libxl_list.h _paths.h \
 	libxlu_disk_l.h _libxl_save_msgs_callout.h _libxl_save_msgs_helper.h
@@ -185,7 +185,7 @@ XL_OBJS = xl.o xl_cmdimpl.o xl_cmdtable.o xl_sxp.o
 $(XL_OBJS) $(TEST_PROG_OBJS) _libxl.api-for-check: \
             CFLAGS += $(CFLAGS_libxentoollog)
 $(XL_OBJS): CFLAGS += $(CFLAGS_XL)
-$(XL_OBJS): CFLAGS += -include $(XEN_ROOT)/tools/config.h $(CFLAGS_libblktapctl) # libxl_json.h needs it.
+$(XL_OBJS): CFLAGS += -include $(XEN_ROOT)/tools/config.h # libxl_json.h needs it.
 
 libxl_dom.o: CFLAGS += -I$(XEN_ROOT)/tools  # include libacpi/x86.h
 libxl_x86_acpi.o: CFLAGS += -I$(XEN_ROOT)/tools
