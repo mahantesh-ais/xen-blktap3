@@ -295,11 +295,6 @@ static int disk_try_backend(disk_try_backend_args *a,
                        a->disk->vdev);
             return 0;
         }
-        if (!libxl__blktap_enabled(a->gc)) {
-            LOG(DEBUG, "Disk vdev=%s, backend tap unsuitable because blktap "
-                       "not available", a->disk->vdev);
-            return 0;
-        }
         if (!(a->disk->format == LIBXL_DISK_FORMAT_RAW ||
               a->disk->format == LIBXL_DISK_FORMAT_VHD)) {
             goto bad_format;

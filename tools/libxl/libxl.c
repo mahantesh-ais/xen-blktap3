@@ -2099,7 +2099,7 @@ int libxl__device_from_disk(libxl__gc *gc, uint32_t domid,
             device->backend_kind = LIBXL__DEVICE_KIND_VBD;
             break;
         case LIBXL_DISK_BACKEND_TAP:
-            device->backend_kind = LIBXL__DEVICE_KIND_VBD;
+            device->backend_kind = LIBXL__DEVICE_KIND_XENIO;
             break;
         case LIBXL_DISK_BACKEND_QDISK:
             device->backend_kind = LIBXL__DEVICE_KIND_QDISK;
@@ -2219,7 +2219,6 @@ static void device_disk_add(libxl__egc *egc, uint32_t domid,
             case LIBXL_DISK_BACKEND_PHY:
                 dev = disk->pdev_path;
 
-        do_backend_phy:
                 flexarray_append(back, "params");
                 flexarray_append(back, dev);
 
@@ -2231,27 +2230,20 @@ static void device_disk_add(libxl__egc *egc, uint32_t domid,
                 break;
 
             case LIBXL_DISK_BACKEND_TAP:
-                if (dev == NULL) {
-                    dev = libxl__blktap_devpath(gc, disk->pdev_path,
-                                                disk->format);
-                    if (!dev) {
-                        LOG(ERROR, "failed to get blktap devpath for %p",
-                            disk->pdev_path);
-                        rc = ERROR_FAIL;
-                        goto out;
+                rc = libxl__blktap_devpath(gc, disk->pdev_path, disk->format);
+                if (rc) {
+                     LOG(ERROR, "failed to get blktap devpath for %s: %s\n",
+                         disk->pdev_path, strerror(rc));
+		     rc = ERROR_FAIL;
+                     goto out;
                     }
                 }
                 flexarray_append(back, "tapdisk-params");
                 flexarray_append(back, GCSPRINTF("%s:%s",
                     libxl__device_disk_string_of_format(disk->format),
                     disk->pdev_path));
-
-                /* tap backends with scripts are rejected by
-                 * libxl__device_disk_set_backend */
-                assert(!disk->script);
-
-                /* now create a phy device to export the device to the guest */
-                goto do_backend_phy;
+		break;  
+		
             case LIBXL_DISK_BACKEND_QDISK:
                 flexarray_append(back, "params");
                 flexarray_append(back, GCSPRINTF("%s:%s",

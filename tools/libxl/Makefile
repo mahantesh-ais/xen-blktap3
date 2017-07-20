@@ -47,9 +47,9 @@ LIBXLU_LIBS = $(LDLIBS_libxenlight)
 
 LIBXL_OBJS-y = osdeps.o libxl_paths.o libxl_bootloader.o flexarray.o
 ifeq ($(LIBXL_BLKTAP),y)
-LIBXL_OBJS-y += libxl_blktap2.o
+LIBXL_OBJS-y += libxl_blktap3.o
 else
-LIBXL_OBJS-y += libxl_noblktap2.o
+LIBXL_OBJS-y += libxl_noblktap3.o
 endif
 
 ifeq ($(CONFIG_LIBNL),y)
@@ -185,7 +185,7 @@ XL_OBJS = xl.o xl_cmdimpl.o xl_cmdtable.o xl_sxp.o
 $(XL_OBJS) $(TEST_PROG_OBJS) _libxl.api-for-check: \
             CFLAGS += $(CFLAGS_libxentoollog)
 $(XL_OBJS): CFLAGS += $(CFLAGS_XL)
-$(XL_OBJS): CFLAGS += -include $(XEN_ROOT)/tools/config.h # libxl_json.h needs it.
+$(XL_OBJS): CFLAGS += -include $(XEN_ROOT)/tools/config.h $(CFLAGS_libblktapctl) # libxl_json.h needs it.
 
 libxl_dom.o: CFLAGS += -I$(XEN_ROOT)/tools  # include libacpi/x86.h
 libxl_x86_acpi.o: CFLAGS += -I$(XEN_ROOT)/tools
