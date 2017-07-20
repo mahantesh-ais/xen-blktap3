@@ -4,11 +4,12 @@
 *.swp
 *.o
 *.d
+!init.d
+!rc.d
 *.opic
 *.a
 *.so
 *.so.[0-9]*
-*.bin
 *.bak
 *.tmp
 *.spot
@@ -27,6 +28,8 @@ cscope.in.out
 cscope.out
 cscope.po.out
 .config
+
+tools/firmware/vgabios/*.bin
 
 dist
 stubdom/*.tar.gz
@@ -149,14 +152,6 @@ tools/helpers/_paths.h
 tools/helpers/init-xenstore-domain
 tools/helpers/xen-init-dom0
 tools/hotplug/common/hotplugpath.sh
-tools/hotplug/FreeBSD/rc.d/xencommons
-tools/hotplug/FreeBSD/rc.d/xendriverdomain
-tools/hotplug/Linux/init.d/sysconfig.xencommons
-tools/hotplug/Linux/init.d/sysconfig.xendomains
-tools/hotplug/Linux/init.d/xen-watchdog
-tools/hotplug/Linux/init.d/xencommons
-tools/hotplug/Linux/init.d/xendomains
-tools/hotplug/Linux/init.d/xendriverdomain
 tools/hotplug/Linux/launch-xenstore
 tools/hotplug/Linux/systemd/*.conf
 tools/hotplug/Linux/systemd/*.mount
@@ -166,8 +161,6 @@ tools/hotplug/Linux/vif-setup
 tools/hotplug/Linux/xen-backend.rules
 tools/hotplug/Linux/xen-hotplug-common.sh
 tools/hotplug/Linux/xendomains
-tools/hotplug/NetBSD/rc.d/xencommons
-tools/hotplug/NetBSD/rc.d/xendriverdomain
 tools/include/acpi
 tools/include/xen/*
 tools/include/xen-xsm/*
