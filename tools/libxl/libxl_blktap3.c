@@ -1,4 +1,5 @@
-pyright (C) 2012      Advanced Micro Devices
+/*
+ * Copyright (C) 2012      Advanced Micro Devices
  * Author Christoph Egger <Christoph.Egger@amd.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -14,20 +15,24 @@ pyright (C) 2012      Advanced Micro Devices
 #include "libxl_osdeps.h" /* must come before any other headers */
 #include "libxl_internal.h"
 
-#include "tap-ctl.h"
-#include "blktap.h"
+#include "tap-ctl.h" /* Copied from blktap3 directory */
+#include "blktap.h" /* Copied from blktap3 directory */
+#include "list.h"   /* include for list_head structure */
 
 static int blktap_find(const char *type, const char *path, struct tap_list *tap)
 {
-    struct tqh_tap_list list;
+    struct list_head list; /* Note: structure name updated */
     struct tap_list *entry, *next_t;
     int ret = -ENOENT, err;
 
-    TAILQ_INIT(&list);
+    /* TAILQ_INIT(&list);--> old function */
+    INIT_LIST_HEAD(&list);
+
     if ((err = tap_ctl_list(&list)))
         return err;
 
-    if (TAILQ_EMPTY(&list))
+    /* TAILQ_EMPTY(&list)--> old function */
+    if (list_empty(&list))
         return ret;
 
     tap_list_for_each_entry_safe(entry, next_t, &list) {
@@ -61,9 +66,10 @@ int libxl__blktap_devpath(libxl__gc *gc, const char *disk,
 		libxl_disk_format format)
 {
     const char *type = NULL;
-    char *params = NULL;
+    char *params, *devname = NULL;
     struct tap_list tap;
     int err = 0;
+    int flags = 0;
 
     type = libxl__device_disk_string_of_format(format);
     if (!(err = blktap_find(type, disk, &tap))) {
@@ -76,7 +82,9 @@ int libxl__blktap_devpath(libxl__gc *gc, const char *disk,
 	/* TODO Should we worry about return codes other than ENOENT? */
 
     params = libxl__sprintf(gc, "%s:%s", type, disk);
-    if (!(err = tap_ctl_create(params, 0, -1, NULL))) {
+
+    /* tap_ctl_create(params, 0, -1, NULL) --> old function call  */ 
+    if (!(err = tap_ctl_create(params, &devname, flags, -1, 0, 0))) {
         LOG(DEBUG, "created tapdisk\n");		
         return 0;
     }

@@ -1371,9 +1371,12 @@ static int libxl__build_device_model_args_new(libxl__gc *gc,
                  * the bootloader path.
                  */
                 if (disks[i].backend == LIBXL_DISK_BACKEND_TAP)
-                    target_path = libxl__blktap_devpath(gc, disks[i].pdev_path,
-                                                        disks[i].format);
-                else
+                /* -----Commented out to support blktap3-----
+		 *    target_path = libxl__blktap_devpath(gc, disks[i].pdev_path,
+                 *                                      disks[i].format);
+	       	 */
+		      target_path = NULL;
+		else
                     target_path = libxl__device_disk_find_local_path(gc,
                                                  guest_domid, &disks[i], true);
 
@@ -1390,11 +1393,10 @@ static int libxl__build_device_model_args_new(libxl__gc *gc,
                 drive = libxl__sprintf(gc,
                          "if=ide,index=%d,readonly=on,media=cdrom,id=ide-%i",
                          disk, dev_number);
-
                 if (target_path)
                     drive = libxl__sprintf(gc, "%s,file=%s,format=%s",
                                            drive, target_path, format);
-            } else {
+	    } else {
                 /*
                  * Explicit sd disks are passed through as is.
                  *
