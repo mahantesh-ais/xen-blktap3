@@ -1338,7 +1338,8 @@ static void disk_eject_xswatch_callback(libxl__egc *egc, libxl__ev_xswatch *w,
             "/local/domain/%d/backend/%" TOSTRING(BACKEND_STRING_SIZE)
            "[a-z]/%*d/%*d",
            &disk->backend_domid, backend_type);
-    if (!strcmp(backend_type, "tap") || !strcmp(backend_type, "vbd")) {
+    /*Add-to-resolve: Added vbd3 comparison in the below line*/
+    if (!strcmp(backend_type, "tap") || !strcmp(backend_type, "vbd") || !strcmp(backend_type, "vbd3")) {
         disk->backend = LIBXL_DISK_BACKEND_TAP;
     } else if (!strcmp(backend_type, "qdisk")) {
         disk->backend = LIBXL_DISK_BACKEND_QDISK;
@@ -3748,6 +3749,7 @@ static int add_device(libxl__egc *egc, libxl__ao *ao,
     switch(dev->backend_kind) {
     case LIBXL__DEVICE_KIND_VBD:
     case LIBXL__DEVICE_KIND_VIF:
+	LOG(DEBUG, "\n Device kind is VBD/VIF \n");
         if (dev->backend_kind == LIBXL__DEVICE_KIND_VBD) dguest->num_vbds++;
         if (dev->backend_kind == LIBXL__DEVICE_KIND_VIF) dguest->num_vifs++;
 
@@ -3760,18 +3762,20 @@ static int add_device(libxl__egc *egc, libxl__ao *ao,
 
         break;
     case LIBXL__DEVICE_KIND_QDISK:
+	LOG(DEBUG, "\n Device kind is Qdisk\n");
         if (dguest->num_qdisks == 0) {
             GCNEW(dmss);
             dmss->guest_domid = dev->domid;
             dmss->spawn.ao = ao;
             dmss->callback = qdisk_spawn_outcome;
-
+	    LOG(DEBUG, "\n Spawning qdisk backend\n");
             libxl__spawn_qdisk_backend(egc, dmss);
         }
         dguest->num_qdisks++;
 
         break;
     default:
+	LOG(DEBUG, "\n Device kind is VBD3/Something else\n");
         rc = 1;
         break;
     }
@@ -3895,7 +3899,8 @@ static void backend_watch_callback(libxl__egc *egc, libxl__ev_xswatch *watch,
         ddev->dev = dev;
         LIBXL_SLIST_INSERT_HEAD(&dguest->devices, ddev, next);
         LOG(DEBUG, "added device %s to the list of active devices", path);
-        rc = add_device(egc, nested_ao, dguest, ddev);
+        LOG(DEBUG, "\n Adding new device\n");
+	rc = add_device(egc, nested_ao, dguest, ddev);
         if (rc > 0)
             free_ao = true;
     } else if (state == XenbusStateClosed && online == 0) {

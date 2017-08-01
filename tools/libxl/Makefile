@@ -167,7 +167,7 @@ LIBXL_TEST_OBJS += $(foreach t, $(LIBXL_TESTS_INSIDE),libxl_test_$t.o)
 TEST_PROG_OBJS += $(foreach t, $(LIBXL_TESTS_PROGS),test_$t.o) test_common.o
 TEST_PROGS += $(foreach t, $(LIBXL_TESTS_PROGS),test_$t)
 
-$(LIBXL_OBJS) $(LIBXL_TEST_OBJS): CFLAGS += $(CFLAGS_LIBXL) -include $(XEN_ROOT)/tools/config.h #$(CFLAGS_libblktapctl)
+$(LIBXL_OBJS) $(LIBXL_TEST_OBJS): CFLAGS += $(CFLAGS_LIBXL) -include $(XEN_ROOT)/tools/config.h
 
 AUTOINCS= libxlu_cfg_y.h libxlu_cfg_l.h _libxl_list.h _paths.h \
 	libxlu_disk_l.h _libxl_save_msgs_callout.h _libxl_save_msgs_helper.h
@@ -252,12 +252,12 @@ $(LIBXL_OBJS) $(LIBXL_TEST_OBJS) $(LIBXLU_OBJS) \
 $(LIBXL_OBJS) $(LIBXL_TEST_OBJS): libxl_internal.h
 
 _libxl_type%.h _libxl_type%_json.h _libxl_type%_private.h _libxl_type%.c: libxl_type%.idl gentypes.py idl.py
-	$(PYTHON) gentypes.py libxl_types_internal.idl __libxl_types_internal.h __libxl_types_internal_private.h \
-		__libxl_types_internal_json.h  __libxl_types_internal.c
-	$(call move-if-changed,__libxl_types_internal.h,_libxl_types_internal.h)
-	$(call move-if-changed,__libxl_types_internal_private.h,_libxl_types_internal_private.h)
-	$(call move-if-changed,__libxl_types_internal_json.h,_libxl_types_internal_json.h)
-	$(call move-if-changed,__libxl_types_internal.c,_libxl_types_internal.c)
+	$(PYTHON) gentypes.py libxl_type$*.idl __libxl_type$*.h __libxl_type$*_private.h \
+		__libxl_type$*_json.h  __libxl_type$*.c
+	$(call move-if-changed,__libxl_type$*.h,_libxl_type$*.h)
+	$(call move-if-changed,__libxl_type$*_private.h,_libxl_type$*_private.h)
+	$(call move-if-changed,__libxl_type$*_json.h,_libxl_type$*_json.h)
+	$(call move-if-changed,__libxl_type$*.c,_libxl_type$*.c)
 
 libxenlight.so: libxenlight.so.$(MAJOR)
 	$(SYMLINK_SHLIB) $< $@

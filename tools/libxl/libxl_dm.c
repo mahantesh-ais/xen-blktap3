@@ -2111,8 +2111,9 @@ retry_transaction:
     spawn->confirm_cb = device_model_confirm;
     spawn->failure_cb = device_model_startup_failed;
     spawn->detached_cb = device_model_detached;
-
+    /*Add-to-comment LOG(DEBUG, "\nSpawning libxl_dm \n"); */
     rc = libxl__spawn_spawn(egc, spawn);
+    /*Add-to-comment LOG(DEBUG, "\nlibxl_dm spawn returned with %d \n", rc); */
     if (rc < 0)
         goto out_close;
     if (!rc) { /* inner child */
@@ -2161,7 +2162,7 @@ static void device_model_confirm(libxl__egc *egc, libxl__spawn_state *spawn,
 
     if (strcmp(xsdata, "running"))
         return;
-
+    /*Add-to-comment LOG(DEBUG, "\nXSDATA: %s \n",xsdata); */
     libxl__spawn_initiate_detach(gc, spawn);
 }
 
