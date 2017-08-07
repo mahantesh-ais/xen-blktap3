@@ -2231,13 +2231,24 @@ static void device_disk_add(libxl__egc *egc, uint32_t domid,
                 break;
 
             case LIBXL_DISK_BACKEND_TAP:
-                rc = libxl__blktap_devpath(gc, disk->pdev_path, disk->format); 
-		if (rc) {
+		rc = 0; /*Added to keep consistency with remaining changes done */
+                dev = libxl__blktap_devpath(gc, disk->pdev_path, disk->format); 
+		if (!dev) {
                     LOG(ERROR, "failed to get blktap devpath for %s: %s\n",
                         disk->pdev_path, strerror(rc));
                     rc = ERROR_FAIL;
                     goto out;
                 }
+		printf("\nBLKTAP3_DEBUG: dev path = %s  \n", dev);
+		if (!disk->script && disk->backend_domid == LIBXL_TOOLSTACK_DOMID) {
+		    int major, minor;
+		    LOG(DEBUG, "\nBLKTAP3_DEBUG: Going to read major:minor \n");
+		    if (!libxl__device_physdisk_major_minor(dev, &major, &minor)) {
+			LOG(DEBUG, "\nBLKTAP3_DEBUG: major:minor = %x:%x\n",major,minor);
+			flexarray_append_pair(back, "physical-device",
+                        	GCSPRINTF("%x:%x", major, minor));
+		    }
+		}
                 flexarray_append(back, "tapdisk-params");
                 flexarray_append(back, GCSPRINTF("%s:%s",
                     libxl__device_disk_string_of_format(disk->format),

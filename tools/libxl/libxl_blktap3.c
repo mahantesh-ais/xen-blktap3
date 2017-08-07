@@ -44,7 +44,8 @@ static int blktap_find(const char *type, const char *path, struct tap_list *tap)
             continue;
 
         *tap = *entry;
-        tap->type = tap->path = NULL;
+        printf("\nBLKTAP3_DEBUG: type = %s, path = %s \n", tap->type, tap->path);
+	tap->type = tap->path = NULL;
         ret = 0;
         break;
     }
@@ -62,7 +63,7 @@ int libxl__blktap_enabled(libxl__gc *gc)
     return 1;
 }
 
-int libxl__blktap_devpath(libxl__gc *gc, const char *disk,
+char *libxl__blktap_devpath(libxl__gc *gc, const char *disk,
 		libxl_disk_format format)
 {
     const char *type = NULL;
@@ -74,7 +75,10 @@ int libxl__blktap_devpath(libxl__gc *gc, const char *disk,
     type = libxl__device_disk_string_of_format(format);
     if (!(err = blktap_find(type, disk, &tap))) {
         LOG(DEBUG, "found tapdisk\n");
-		return 0;
+	devname = libxl__sprintf(gc, "/dev/xen/blktap-2/tapdev%d", tap.minor);
+        if (devname)
+            return devname;
+		/* return 0; revert-back-changes*/
     }
 
     LOG(DEBUG, "tapdisk not found\n");
@@ -89,12 +93,12 @@ int libxl__blktap_devpath(libxl__gc *gc, const char *disk,
     /* tap_ctl_create(params, 0, -1, NULL) --> old function call  */ 
     if (!(err = tap_ctl_create(params, &devname, flags, -1, 0, 0))) {
         LOG(DEBUG, "created tapdisk\n");		
-        return 0;
+        return devname; /*revert-back-changes*/
     }
 
     LOG(ERROR, "error creating tapdisk: %s\n", strerror(err));
 
-    return err;
+    return NULL;/*revert-back-changes*/
 }
 
 int libxl__device_destroy_tapdisk(libxl__gc *gc, const char *be_path)

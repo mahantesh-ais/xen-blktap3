@@ -1722,9 +1722,10 @@ _hidden int libxl__blktap_enabled(libxl__gc *gc);
 /* libxl__blktap_devpath:
  *    Argument: path and disk image as specified in config file.
  *      The type specifies whether this is aio, qcow, qcow2, etc.
- *    returns 0 on success, an error code otherwise 
+ *    returns device path xenstore wants to have.
+ *            NULL, if no device corresponds to the disk. 
  */
-_hidden int libxl__blktap_devpath(libxl__gc *gc,
+_hidden char *libxl__blktap_devpath(libxl__gc *gc,
                                     const char *disk,
                                     libxl_disk_format format);
 
