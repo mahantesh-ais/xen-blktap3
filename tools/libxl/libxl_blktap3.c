@@ -44,7 +44,6 @@ static int blktap_find(const char *type, const char *path, struct tap_list *tap)
             continue;
 
         *tap = *entry;
-        printf("\nBLKTAP3_DEBUG: type = %s, path = %s \n", tap->type, tap->path);
 	tap->type = tap->path = NULL;
         ret = 0;
         break;

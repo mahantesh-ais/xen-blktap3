@@ -424,13 +424,9 @@ char *libxl__device_disk_string_of_backend(libxl_disk_backend backend)
 int libxl__device_physdisk_major_minor(const char *physpath, int *major, int *minor)
 {
     struct stat buf;
-    /*Add-to-debug*/
-    printf("\nBLKTAP3_DEBUG: Calling function stat \n");
-    if (stat(physpath, &buf) < 0) {/*Add-to-debug*/
-     	printf("\nBLKTAP3_DEBUG: errno = %s, physpath = %s \n", strerror(errno), physpath);   
+    if (stat(physpath, &buf) < 0) 
 	return -1;
-    }
-    printf("\nBLKTAP3_DEBUG: Calling function S_ISBLK\n");
+    
     if (!S_ISBLK(buf.st_mode))
         return -1;
     *major = major(buf.st_rdev);
@@ -918,7 +914,6 @@ void libxl__initiate_device_generic_remove(libxl__egc *egc,
         LOG(ERROR, "unable to get my domid");
         goto out;
     }
-
     if (my_domid == LIBXL_TOOLSTACK_DOMID) {
         rc = libxl_domain_info(CTX, &info, domid);
         if (rc) {
@@ -1064,7 +1059,7 @@ static void device_backend_callback(libxl__egc *egc, libxl__ev_devstate *ds,
         aodev->action == LIBXL__DEVICE_ACTION_REMOVE &&
         !aodev->force) {
         LOG(DEBUG, "Timeout reached, initiating forced remove");
-        aodev->force = 1;
+	aodev->force = 1;
         libxl__initiate_device_generic_remove(egc, aodev);
         return;
     }
@@ -1075,7 +1070,6 @@ static void device_backend_callback(libxl__egc *egc, libxl__ev_devstate *ds,
                    libxl__device_backend_path(gc, aodev->dev));
         goto out;
     }
-
     device_hotplug(egc, aodev);
     return;
 

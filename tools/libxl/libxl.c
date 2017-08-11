@@ -2239,7 +2239,7 @@ static void device_disk_add(libxl__egc *egc, uint32_t domid,
                     rc = ERROR_FAIL;
                     goto out;
                 }
-		printf("\nBLKTAP3_DEBUG: dev path = %s  \n", dev);
+		LOG(DEBUG,"\nBLKTAP3_DEBUG: dev path = %s  \n", dev);
 		if (!disk->script && disk->backend_domid == LIBXL_TOOLSTACK_DOMID) {
 		    int major, minor;
 		    LOG(DEBUG, "\nBLKTAP3_DEBUG: Going to read major:minor \n");
