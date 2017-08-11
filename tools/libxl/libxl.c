@@ -2239,10 +2239,10 @@ static void device_disk_add(libxl__egc *egc, uint32_t domid,
                     rc = ERROR_FAIL;
                     goto out;
                 }
-		LOG(DEBUG,"\nBLKTAP3_DEBUG: dev path = %s  \n", dev);
+		LOG(DEBUG,"\nBLKTAP3_DEBUG: dev path = %s \n", dev);
 		if (!disk->script && disk->backend_domid == LIBXL_TOOLSTACK_DOMID) {
 		    int major, minor;
-		    LOG(DEBUG, "\nBLKTAP3_DEBUG: Going to read major:minor \n");
+		    LOG(DEBUG,"\nBLKTAP3_DEBUG: Going to read major:minor \n");
 		    if (!libxl__device_physdisk_major_minor(dev, &major, &minor)) {
 			LOG(DEBUG, "\nBLKTAP3_DEBUG: major:minor = %x:%x\n",major,minor);
 			flexarray_append_pair(back, "physical-device",
