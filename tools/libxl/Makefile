@@ -26,6 +26,8 @@ ifeq ($(CONFIG_LIBNL),y)
 LIBXL_LIBS += $(LIBNL3_LIBS)
 endif
 
+CFLAGS_LIBXL += -I/usr/include/blktap
+
 CFLAGS_LIBXL += $(CFLAGS_libxentoollog)
 CFLAGS_LIBXL += $(CFLAGS_libxenevtchn)
 CFLAGS_LIBXL += $(CFLAGS_libxenctrl)

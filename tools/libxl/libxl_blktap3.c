@@ -15,8 +15,8 @@
 #include "libxl_osdeps.h" /* must come before any other headers */
 #include "libxl_internal.h"
 
-#include "tap-ctl.h" /* Copied from blktap3 directory */
-#include "blktap.h" /* Copied from blktap3 directory */
+#include <tap-ctl.h>
+
 #include "list.h"   /* include for list_head structure */
 
 static int blktap_find(const char *type, const char *path, struct tap_list *tap)
