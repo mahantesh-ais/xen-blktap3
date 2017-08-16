@@ -1,0 +1,76 @@
+#! /bin/sh
+#
+# Copyright (c) 2017 Assured Information Security
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+
+### BEGIN INIT INFO
+# Provides:         blktap init-dom0 xenstored xenconsoled 
+# Required-Start:    
+# Should-Start:
+# Required-Stop:     
+# Should-Stop:
+# Default-Start:     2 3 5
+# Default-Stop:      
+# Short-Description: Start xenstored, xenconsoled, init-dom0 and other kernel modules
+# Description:       Starts and stops the daemons neeeded for xl/xend, initializes the dom0 and loads the necessary kernel modules for blktap3.
+### END INIT INFO
+
+
+NAME="xen-init-dom0"
+BIN=/usr/lib/xen/bin/xen-init-dom0
+RUN_DIR=/var/run/xen
+LOCK_DIR=/var/log/xen
+SBIN_DIR=/usr/sbin
+
+set -e
+
+test -x $BIN || exit 0
+
+case "$1" in
+	start)
+	    mount -t xenfs none /proc/xen
+	    modprobe xen-gntdev
+	    modprobe xen-evtchn
+	    modprobe blktap
+
+	    mkdir -p $RUN_DIR
+	    mkdir -p $LOCK_DIR
+
+	    echo "Starting xenstored"
+	    ${SBIN_DIR}/xenstored
+
+	    echo "Starting xenconsoled"
+	    ${SBIN_DIR}/xenconsoled
+	    
+	    echo "Calling $NAME"
+	    $BIN &
+	    ;;
+
+	stop)
+	    # Nothing to do, but no reason to fail
+	    ;;
+
+	restart)
+	    # Nothing to do, but no reason to fail
+	    ;;
+
+	*)
+	    echo "Usage: $0 {start|stop|restart}"
+	    exit 1
+esac
+
+exit 0

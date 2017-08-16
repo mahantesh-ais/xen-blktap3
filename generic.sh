@@ -11,4 +11,4 @@ make -C tools subdir-all-xenmon
 make -C tools subdir-all-console
 make -C tools subdir-all-xenstat
 make -C tools subdir-all-firmware
-
+make -C tools subdir-all-helpers
