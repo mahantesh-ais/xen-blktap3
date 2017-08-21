@@ -85,13 +85,10 @@ char *libxl__blktap_devpath(libxl__gc *gc, const char *disk,
 	/* TODO Should we worry about return codes other than ENOENT? */
 
     params = libxl__sprintf(gc, "%s:%s", type, disk);
-    
-    /*Add-to-debug
-    LOG(ERROR, "\n type=%s, disk=%s \n",type, disk );*/
-   
-    /* tap_ctl_create(params, 0, -1, NULL) --> old function call  */ 
+
+    /* tap_ctl_create(params, 0, -1, NULL) --> old function call  */
     if (!(err = tap_ctl_create(params, &devname, flags, -1, 0, 0))) {
-        LOG(DEBUG, "created tapdisk\n");		
+        LOG(DEBUG, "created tapdisk\n");
         return devname; /*revert-back-changes*/
     }
 

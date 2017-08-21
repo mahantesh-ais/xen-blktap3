@@ -20,20 +20,17 @@ LIBUUID_LIBS += -luuid
 endif
 
 LIBXL_LIBS =
-#Removed $(LDLIBS_libblktapctl) from the below line; it is linked to blktap2
 LIBXL_LIBS = $(LDLIBS_libxentoollog) $(LDLIBS_libxenevtchn) $(LDLIBS_libxenctrl) $(LDLIBS_libxenguest) $(LDLIBS_libxenstore) $(PTYFUNCS_LIBS) $(LIBUUID_LIBS)
 ifeq ($(CONFIG_LIBNL),y)
 LIBXL_LIBS += $(LIBNL3_LIBS)
 endif
 
 CFLAGS_LIBXL += -I/usr/include/blktap
-
 CFLAGS_LIBXL += $(CFLAGS_libxentoollog)
 CFLAGS_LIBXL += $(CFLAGS_libxenevtchn)
 CFLAGS_LIBXL += $(CFLAGS_libxenctrl)
 CFLAGS_LIBXL += $(CFLAGS_libxenguest)
 CFLAGS_LIBXL += $(CFLAGS_libxenstore)
-#CFLAGS_LIBXL += $(CFLAGS_libblktapctl) 
 ifeq ($(CONFIG_LIBNL),y)
 CFLAGS_LIBXL += $(LIBNL3_CFLAGS)
 endif

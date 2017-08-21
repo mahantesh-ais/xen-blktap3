@@ -279,14 +279,14 @@ static void xenstore_get_backend_path(char **backend, const char *devtype,
     backend_dompath = xs_get_domain_path(xsh, domid_backend);
     if (!backend_dompath) goto out;
     
-    const char *expected_devtypes[5]; /* Add-to-resolve: Changed the size from 4 -> 5*/
+    const char *expected_devtypes[5];
     const char **expected_devtype = expected_devtypes;
 
     *expected_devtype++ = devtype;
     if (!strcmp(devtype, "vbd")) {
 	*expected_devtype++ = "tap";
 	*expected_devtype++ = "qdisk";
-	*expected_devtype++ = "vbd3"; /* Add-to-resolve: Added vbd3 into the expected_devtypes array */
+	*expected_devtype++ = "vbd3";
     }
     *expected_devtype = 0;
     assert(expected_devtype <
@@ -540,7 +540,6 @@ void xenstore_parse_domain_config(int hvm_domid)
         if (drv == NULL)
             continue;
         /* Obtain blktap sub-type prefix */
-	/*Add-to-resolve: added vbd3 in the comparison statement */
         if ((!strcmp(drv, "tap") || !strcmp(drv, "qdisk") || !strcmp(drv, "vbd3")) && params[0]) {
             char *offset = strchr(params, ':'); 
             if (!offset)
@@ -1134,7 +1133,6 @@ void xenstore_process_event(void *opaque)
         if (pasprintf(&buf, "%s/type", bpath) == -1) 
             goto out;
         drv = xs_read(xsh, XBT_NULL, buf, &len);
-	/*Add-to-resolve: Added vbd3 in the below comparision*/
 	if (drv && (!strcmp(drv, "tap") || !strcmp(drv, "qdisk") || !strcmp(drv, "vbd3")) &&
 		((offset = strchr(image, ':')) != NULL))
             memmove(image, offset+1, strlen(offset+1)+1);
@@ -1517,7 +1515,7 @@ char *xenstore_device_model_read(int domid, const char *key, unsigned int *len)
 
     value = xs_read(xsh, XBT_NULL, path, len);
     if (value == NULL)
-        fprintf(logfile, "DDEBUG : xs_read(%s): read error\n", path);
+        fprintf(logfile, "xs_read(%s): read error\n", path);
 
     free(path);
     return value;

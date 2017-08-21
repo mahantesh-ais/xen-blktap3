@@ -285,7 +285,7 @@ static int disk_try_backend(disk_try_backend_args *a,
         return 0;
 
     case LIBXL_DISK_BACKEND_TAP:
-        if (a->disk->script) goto bad_script;/*Add-to-resolve*/
+        if (a->disk->script) goto bad_script;
         if (libxl_defbool_val(a->disk->colo_enable))
             goto bad_colo;
 
@@ -298,8 +298,6 @@ static int disk_try_backend(disk_try_backend_args *a,
               a->disk->format == LIBXL_DISK_FORMAT_VHD)) {
             goto bad_format;
         }
-	/*Add-to-debug*/
-	LOG(DEBUG, "\nDisk format is = %d \n",a->disk->format);
         return backend;
 
     case LIBXL_DISK_BACKEND_QDISK:
@@ -424,9 +422,9 @@ char *libxl__device_disk_string_of_backend(libxl_disk_backend backend)
 int libxl__device_physdisk_major_minor(const char *physpath, int *major, int *minor)
 {
     struct stat buf;
-    if (stat(physpath, &buf) < 0) 
+    if (stat(physpath, &buf) < 0)
 	return -1;
-    
+
     if (!S_ISBLK(buf.st_mode))
         return -1;
     *major = major(buf.st_rdev);

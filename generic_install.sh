@@ -1,4 +1,5 @@
 #!/bin/bash
+### Install all the dependencies for blktap3
 make -C tools subdir-install-include
 make -C tools subdir-install-libs
 make -C tools subdir-install-libxc
@@ -11,4 +12,3 @@ make -C tools subdir-install-xenmon
 make -C tools subdir-install-console
 make -C tools subdir-install-xenstat
 make -C tools subdir-install-firmware
-make -C tools subdir-install-helpers

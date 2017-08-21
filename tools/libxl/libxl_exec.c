@@ -361,8 +361,6 @@ static void spawn_detach(libxl__gc *gc, libxl__spawn_state *ss)
     libxl__xswait_stop(gc, &ss->xswait);
 
     pid_t child = ss->mid.pid;
-    /*Add-to-debug
-    LOG(ERROR, "\n SIGKILL sent to process with pid = %lu \n", (unsigned long)child);*/
     r = kill(child, SIGKILL);
     if (r && errno != ESRCH)
         LOGE(WARN, "%s: failed to kill intermediate child (pid=%lu)",
@@ -372,7 +370,6 @@ static void spawn_detach(libxl__gc *gc, libxl__spawn_state *ss)
 void libxl__spawn_initiate_detach(libxl__gc *gc, libxl__spawn_state *ss)
 {
     ss->detaching = 1;
-    /*Add-to-debug LOG(ERROR, "\n Detaching child:init detach \n");*/
     spawn_detach(gc, ss);
 }
 
@@ -383,7 +380,6 @@ static void spawn_fail(libxl__egc *egc, libxl__spawn_state *ss, int rc)
     EGC_GC;
     assert(rc);
     ss->rc = rc;
-    /*Add-to-debug LOG(ERROR, "\n Detaching child:fail \n");*/
     spawn_detach(gc, ss);
 }
 
@@ -414,9 +410,6 @@ static void spawn_middle_death(libxl__egc *egc, libxl__ev_child *childw,
         ((WIFEXITED(status) && WEXITSTATUS(status)==0) ||
          (WIFSIGNALED(status) && WTERMSIG(status)==SIGKILL))) {
         /* as expected */
-	/*Add-to-debug
-	if(WTERMSIG(status) == SIGKILL)
-		LOG(ERROR, "\n domain killed due to SIGKILL signal\n");*/
         const char *what = GCSPRINTF("%s (dying as expected)", ss->what);
         libxl_report_child_exitstatus(CTX, XTL_DEBUG, what, pid, status);
     } else if (!WIFEXITED(status)) {

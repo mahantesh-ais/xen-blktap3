@@ -538,8 +538,6 @@ static void async_exec_timeout(libxl__egc *egc,
     assert(libxl__ev_child_inuse(&aes->child));
     LOG(ERROR, "killing execution of %s because of timeout", aes->what);
 
-    /*Add-to-debug*/
-    LOG(ERROR, "\n Sending SIGKILL to process [%lu] \n", (unsigned long)aes->child.pid);
     if (kill(aes->child.pid, SIGKILL)) {
         LOGEV(ERROR, errno, "unable to kill %s [%ld]",
               aes->what, (unsigned long)aes->child.pid);

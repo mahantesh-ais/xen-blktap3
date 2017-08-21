@@ -1371,11 +1371,7 @@ static int libxl__build_device_model_args_new(libxl__gc *gc,
                  * the bootloader path.
                  */
                 if (disks[i].backend == LIBXL_DISK_BACKEND_TAP)
-                /* -----Commented out to support blktap3-----
-		 *    target_path = libxl__blktap_devpath(gc, disks[i].pdev_path,
-                 *                                      disks[i].format);
-	       	 */
-		      target_path = NULL;
+		    target_path = NULL;
 		else
                     target_path = libxl__device_disk_find_local_path(gc,
                                                  guest_domid, &disks[i], true);
@@ -2111,9 +2107,7 @@ retry_transaction:
     spawn->confirm_cb = device_model_confirm;
     spawn->failure_cb = device_model_startup_failed;
     spawn->detached_cb = device_model_detached;
-    /*Add-to-comment LOG(DEBUG, "\nSpawning libxl_dm \n"); */
     rc = libxl__spawn_spawn(egc, spawn);
-    /*Add-to-comment LOG(DEBUG, "\nlibxl_dm spawn returned with %d \n", rc); */
     if (rc < 0)
         goto out_close;
     if (!rc) { /* inner child */
@@ -2162,7 +2156,7 @@ static void device_model_confirm(libxl__egc *egc, libxl__spawn_state *spawn,
 
     if (strcmp(xsdata, "running"))
         return;
-    /*Add-to-comment LOG(DEBUG, "\nXSDATA: %s \n",xsdata); */
+
     libxl__spawn_initiate_detach(gc, spawn);
 }
 
@@ -2343,7 +2337,7 @@ int libxl__destroy_device_model(libxl__gc *gc, uint32_t domid)
     char *path = DEVICE_MODEL_XS_PATH(gc, LIBXL_TOOLSTACK_DOMID, domid, "");
     if (!xs_rm(CTX->xsh, XBT_NULL, path))
         LOG(ERROR, "xs_rm failed for %s", path);
-    
+
     /* We should try to destroy the device model anyway. */
     return kill_device_model(gc,
                 GCSPRINTF("/local/domain/%d/image/device-model-pid", domid));
